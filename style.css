@@ -1,0 +1,58 @@
+html,body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    padding-top: 1em;
+    text-align: center;
+    background-color: black;
+    background-size: cover;
+    background-repeat: space;
+}
+
+h1, h2 {
+    font-family: something for now;
+    color: goldenrod;
+}
+
+canvas {
+    background-color: wheat;
+    width: 100%;
+    height: 100;
+}
+
+#container {
+    max-width: 50em;
+    height: 70vh;
+    background-color:tbd;
+    margin: 0 auto;
+    padding: 1em;
+    display: grid;
+    grid-gap: 1em;
+    grid-template-rows: .5fr .5fr;
+    grid-template-columns: .25fr .5fr .25fr;
+    grid-template-areas: "top-bar top-bar"
+                          "game game game"
+                          "btm-left btm-right";
+}
+
+#top-bar, #btm-left, #btm-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: tbd white;
+}
+
+main {
+    grid-area: game;
+}
+
+#btm-left {
+    grid-area: btm-left;
+    border: 1px wheat;
+}
+
+#btm-right {
+    grid-area: btm-right;
+}
