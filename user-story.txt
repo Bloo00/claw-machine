@@ -1,0 +1,10 @@
+User story
+
+See a screen load.
+on the screen want to see: one claw, a group of prizes, amount of coins and timer.
+
+would like to be able to add coins in and move the claw
+would also like to see the claw machine pick up the prizes and drop them off
+after the 
+would like to see buttons to shake the machine to move the prizes a little.
+
