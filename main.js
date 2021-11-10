@@ -22,6 +22,9 @@ let coins               = 0;
 let gameStart           = false;
 let prizes              = [];                          // think this should link to cute images maybe pixel art
 let prizesGot           = [];
+let time                = 0;                           // adds on per click of the coin slot
+let prize;
+let claw;
 // ==== Entities ====
 
 class Prize {
@@ -37,10 +40,10 @@ class Prize {
         function aveWidth(x, width) {
             return (x+width)/2;
         }
-        
+
         this.render = function () {
             ctx.fillStyle = '#09F'; 
-            ctx.fillRect(this.x, this.y, this.width);
+            ctx.fillRect(this.x, this.y, this.width, this.height);
         }
     }
 }
@@ -54,9 +57,9 @@ class Claw {
         this.width      = width;                        // i want the average of this or the base of the claw to
         this.caught     = false;
 
-        this.render = function () {
+        this.render     = function () {
             ctx.fillStyle = "#bada55"; // 
-            ctx.fillRect(this.x, this.y, this.width);
+            ctx.fillRect(this.x, this.y, this.width, this.height);
         }
 
         function aveWidth(x, width) {
@@ -75,11 +78,23 @@ class Machine {
 
 // ==== Event listener ====
 
-window.addEventListener("DOMcontentLoaded", function(e) {
-    let claw = new Claw(10, 10, 0, 50, 50);
-
-    const runGame = setInterval(gameLoop(), 120); 
+window.addEventListener("load", function(e) {       // should check to see if the dom loaded
+    claw = new Claw(10, 10, 0, 50, 50);                  // makes a new claw with the size of that
+                                                                // the 0 is the z axis and should go to 5
+    const runGame = setInterval(gameLoop, 120);               // game loop set at 120 ms
+    console.log(claw);
 })
+
+// ==== Game Processes ====
+
+function gameLoop() {
+    ctx.clearRect(0,0,game.width,game.height);  // clears canvas
+    for (let i = 0; i < prizes.length; i++) {
+        prizes[i].render();
+    }
+    claw.render();           // makes a new claw
+
+}
 
 // ==== Movement of the Claw ====
 
@@ -109,50 +124,34 @@ function movementHandler (e) {
     
 }
 
-// ==== Game Processes ====
 
-function gameLoop() {
-    ctx.clearRect(0,0,game.width,game.height);  // clears canvas
-
-    claw.render();
-
-}
 
 // ==== Prize maker ====
 
-function prizeMaker() {
+function prizeMaker() {         // should give me a random number of prizes starting from 5 all the way up to ten
     let randInt = Math.floor(Math.random() * 5);
     randInt = randInt + 5;
     for(let i = 0; i < randInt; i++){
-        let newPrize = new Prize;
-        prizes.push(newPrize);
+        prize = new Prize;
+        prizes.push(prize);
     }
+
 }
 
 // ==== Hit Detection ====
 
-function hitDetection(claw, prizes) {
+function hitDetection(newClaw, prizes) {
     for(let i=0; i < prizes.length; i++) {
-        if(claw.aveWidth = prizes[i].aveWidth){
+        if(newClaw.aveWidth = prizes[i].aveWidth){
 
         }
     }
 }
-// ==== Time Left ====
+    // ==== Time Left ====
 
-function timeLeft(coins) {
-    if (false){
-
+    function timeLeft(coins) {
+        if (false){ // should check for button press of the coin slot
+            time = time + 30;
+            return time;
+        }
     }
-}
-
-
-// ==== Time Left on Machine ====
-
-// function countDown(){
-//     currentTime-- // var subtracts from the time left
-//     if (currentTime == 0){
-//         clearInterval()
-
-//     }
-// } 
