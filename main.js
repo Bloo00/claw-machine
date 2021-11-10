@@ -12,31 +12,58 @@ ctx.lineWidth =     5;
 game.setAttribute("height", getComputedStyle(game)["height"]);
 game.setAttribute("width", getComputedStyle(game)["width"]);
 
-// ==== makes the canvas ====
 
 
 
 // ==== variables ====
 
-let coins       = 0;
-let gameStart   = false;
-let prizes      = [];                                   // think this should link to cute images maybe pixel art
-
+let coins               = 0;
+let gameStart           = false;
+let prizes              = [];                          // think this should link to cute images maybe pixel art
 // ==== Entities ====
 
-class prize {
-    constructor(x, y, width, height) {
+class Prize {
+    constructor(x, y, z, width, height) {
         this.x          = x;
         this.y          = y;
-        this.color      = color;
+        this.z          = z;
         this. height    = height;
         this.width      = width;                        // i want the average of this or the base of the claw to
-        this.caught     = false;                          // be the hitbox of it
+        this.caught     = false;                        
+        
 
         this.render = function () {
-            ctx.fillStyle = this.color; // changes color for now but i wanna have a pixel claw
+            ctx.fillStyle = '#09F'; 
             ctx.fillRect(this.x, this.y, this.width);
         }
+    }
+}
+
+class Claw {
+    constructor(x, y, z, width, height) {
+        this.x          = x;
+        this.y          = y;
+        this.z          = z;
+        this. height    = height;
+        this.width      = width;                        // i want the average of this or the base of the claw to
+        this.caught     = false;
+
+        this.render = function () {
+            ctx.fillStyle = yellow; // 
+            ctx.fillRect(this.x, this.y, this.width);
+        }
+
+        function aveWidth(x, width) {
+            return (x+width)/2;
+        }
+    }
+}
+
+class Machine {
+    constructor (coins,difficulty,time) {
+        this.coins      = coins;
+        this.difficulty = difficulty;
+        this.time       = time;
     }
 }
 
@@ -50,21 +77,45 @@ function movementHandler (e) {
 
     switch(e.key){            
         case "w":               // wanna mmake it move to the "z" direction  get further 
-
+            claw.y - 10 >= 0 ? (claw.y -= 10) : null;
             break;
 
-        case "a":               
-
+        case "a" :              // wanna mmake it move to the "z" direction get futher 
+            claw.x - 10 >= 0 ? (claw.x -= 10) : null;
             break;  
-            
-        case "s":               
 
+        case "s":               
+            claw.y + 10 <= game.width ? (claw.y += 10) : null; // should increase the size of the pic so look 3d
             break;
 
         case "d":               // wanna mmake it move to the "z" direction get closer
-                                //
+            claw.x + 10 <= game.width ? (claw.x += 10) : null;
             break;
     }
     
 }
 
+// ==== game processes ====
+function gameLoop() {
+    ctx.clearRect(0,0,game.width,game.height);  // clears canvas
+
+    claw.render();
+}
+
+// ==== Event listener ====
+
+window.addEventListener("DOMcontentLoaded", function(e) {
+    let claw = new Claw(10, 10, 0, 50, 50);
+
+    const runGame = setInterval(gameLoop, 120); 
+})
+
+// ==== time left on machine ====
+
+// function countDown(){
+//     currentTime-- // var subtracts from the time left
+//     if (currentTime == 0){
+//         clearInterval()
+
+//     }
+// } 
