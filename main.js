@@ -23,8 +23,9 @@ let gameStart           = false;
 let prizes              = [];                          // think this should link to cute images maybe pixel art
 let prizesGot           = [];
 let time                = 0;                           // adds on per click of the coin slot
-let prize;
+let prizeItem;
 let claw;
+
 // ==== Entities ====
 
 class Prize {
@@ -81,7 +82,9 @@ class Machine {
 window.addEventListener("load", function(e) {       // should check to see if the dom loaded
     claw = new Claw(10, 10, 0, 50, 50);                  // makes a new claw with the size of that
                                                                 // the 0 is the z axis and should go to 5
-    const runGame = setInterval(gameLoop, 120);               // game loop set at 120 ms
+    prizeMaker();
+    const runGame = setInterval(gameLoop, 1);               // game loop set at 1 ms
+    
     console.log(claw);
 })
 
@@ -89,11 +92,7 @@ window.addEventListener("load", function(e) {       // should check to see if th
 
 function gameLoop() {
     ctx.clearRect(0,0,game.width,game.height);  // clears canvas
-    for (let i = 0; i < prizes.length; i++) {
-        prizes[i].render();
-    }
     claw.render();           // makes a new claw
-
 }
 
 // ==== Movement of the Claw ====
@@ -120,6 +119,9 @@ function movementHandler (e) {
         case "d":               // wanna mmake it move to the "z" direction get closer
             claw.x + 10 <= game.width ? (claw.x += 10) : null;
             break;
+
+        case " ":               // should make the claw take away a try drop the claw and drop it to the box
+            break;
     }
     
 }
@@ -129,20 +131,29 @@ function movementHandler (e) {
 // ==== Prize maker ====
 
 function prizeMaker() {         // should give me a random number of prizes starting from 5 all the way up to ten
-    let randInt = Math.floor(Math.random() * 5);
-    randInt = randInt + 5;
-    for(let i = 0; i < randInt; i++){
-        prize = new Prize;
-        prizes.push(prize);
+    // let randInt = Math.floor(Math.random() * 5);
+    //randInt = randInt + 5;
+    let randInt = 25;
+    for(let i = 0; i < randInt; i++){       // adds it tpp the prizes arr
+        prizeItem = new Prize;
+        prizes.push(prizeItem);
+        console.log(prizes[i]);
     }
 
+    for(let i = 0; i < prizes.length; i++){
+        // let x = Math.floor(Math.random()*50);  // this was for the diffent sizes of prizes but i no do trhat for now
+        // let y = Math.floor(Math.random()*50);
+
+        let pos_x;
+        let pox_y;
+    }
 }
 
 // ==== Hit Detection ====
 
-function hitDetection(newClaw, prizes) {
+function hitDetection(claw, prizes) {
     for(let i=0; i < prizes.length; i++) {
-        if(newClaw.aveWidth = prizes[i].aveWidth){
+        if(claw.aveWidth = prizes[i].aveWidth){
 
         }
     }
