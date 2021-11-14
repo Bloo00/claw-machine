@@ -8,6 +8,7 @@ ctx.fillStyle           = "white";
 ctx.strokeStyle         = "red";
 ctx.lineWidth           = 5;
 
+
 // ==== Canvas sizing ====
 
 game.setAttribute("height", getComputedStyle(game)["height"]);
@@ -23,6 +24,13 @@ let time                = 0;                           // adds on per click of t
 let prizeItem;
 let claw;
 
+let blackCat    = new Image();                          // all my cats
+let greenCat    = new Image(); 
+let tealCat     = new Image();
+let pinkCat     = new Image();
+let purpleCat   = new Image();
+let orangeCat   = new Image();
+
 // ==== Entities ====
 
 class Prize {
@@ -35,12 +43,15 @@ class Prize {
         this.caught     = false;                        
         this.color      = color;
 
+        clawImg.src     = 'Crane_1.png';
+        
+
         function aveWidth(x, width) {
             return (x+width)/2;
         }
 
         this.render = function () {
-            ctx.fillStyle = this.color; 
+            ctx.fillStyle = this.color;
             ctx.fillRect(this.x, this.y, this.width, this.height);
         }
     }
@@ -54,10 +65,13 @@ class Claw {
         this. height    = height;
         this.width      = width;                        // i want the average of this or the base of the claw to
         this.caught     = false;
+        let clawImg     = new Image();
+        clawImg.src     = 'Crane_1.png';
 
         this.render     = function () {
-            ctx.fillStyle = "#bada55"; // 
-            ctx.fillRect(this.x, this.y, this.width, this.height);
+            //ctx.fillStyle = "#bada55"; // 
+            //ctx.fillRect(this.x, this.y, this.width, this.height);
+            ctx.drawImage(clawImg, this.x, this.y, this.width, this.height);
         }
 
         function aveWidth(x, width) {
