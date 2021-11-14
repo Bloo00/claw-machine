@@ -8,13 +8,10 @@ ctx.fillStyle           = "white";
 ctx.strokeStyle         = "red";
 ctx.lineWidth           = 5;
 
-// ==== Canvas Rendering ====
+// ==== Canvas sizing ====
 
 game.setAttribute("height", getComputedStyle(game)["height"]);
 game.setAttribute("width", getComputedStyle(game)["width"]);
-
-
-
 
 // ==== Variables ====
 
@@ -29,21 +26,21 @@ let claw;
 // ==== Entities ====
 
 class Prize {
-    constructor(x, y, z, width, height) {
+    constructor(x, y, z, width, height, color) {
         this.x          = x;
         this.y          = y;
         this.z          = z;
         this.height     = height;
         this.width      = width;                        // i want the average of this or the base of the claw to
         this.caught     = false;                        
-        
+        this.color      = color;
 
         function aveWidth(x, width) {
             return (x+width)/2;
         }
 
         this.render = function () {
-            ctx.fillStyle = '#09F'; 
+            ctx.fillStyle = this.color; 
             ctx.fillRect(this.x, this.y, this.width, this.height);
         }
     }
@@ -69,6 +66,11 @@ class Claw {
     }
 }
 
+function newClawSize (width, height) {
+    claw.width          = width;
+    claw.height         = height;
+}
+
 class Machine {
     constructor (coins,difficulty,time) {
         this.coins      = coins;
@@ -80,12 +82,12 @@ class Machine {
 // ==== Event listener ====
 
 window.addEventListener("load", function(e) {       // should check to see if the dom loaded
-    claw = new Claw(10, 10, 0, 50, 50);                  // makes a new claw with the size of that
+    claw = new Claw(20, 50, 0, 50, 50);                  // makes a new claw with the size of that
                                                                 // the 0 is the z axis and should go to 5
     prizeMaker();
     const runGame = setInterval(gameLoop, 1);               // game loop set at 1 ms
     
-    console.log(claw);
+    //console.log(claw);
 })
 
 // ==== Game Processes ====
@@ -100,12 +102,26 @@ function gameLoop() {
 document.addEventListener("keydown", movementHandler);
 
 function movementHandler (e) {
-    console.log("movement", e.key);
-    console.log(e);
+    //console.log("movement", e.key);
+    //console.log(e);
 
     switch(e.key){            
         case "w":               // wanna mmake it move to the "z" direction  get further 
-            claw.y - 10 >= 0 ? (claw.y -= 10) : null;
+            console.log(claw.z, claw.height, claw.width)
+            if (claw.z === 5){  
+                claw.z          = 5;
+            }else{
+                if (claw.z < 5){
+                    claw.z          += 1;
+                    claw.height     -= 4;
+                    claw.width      -= 4;
+                    claw.x          += 2;
+                }
+                    
+            }
+            
+            
+            //claw.y - 10 >= 0 ? (claw.y -= 10) : null;
             break;
 
         case "a" :              // wanna mmake it move to the "z" direction get futher 
@@ -113,7 +129,18 @@ function movementHandler (e) {
             break;  
 
         case "s":               
-            claw.y + 10 <= game.width ? (claw.y += 10) : null; // should increase the size of the pic so look 3d
+        if (claw.z === 0){  
+            claw.z          = 0;
+        }else{
+            if (claw.z > 0){
+                claw.z          -= 1;
+                claw.height     += 4;
+                claw.width      += 4;
+                claw.x          -= 2;
+            }
+                
+        }
+        
             break;
 
         case "d":               // wanna mmake it move to the "z" direction get closer
@@ -121,6 +148,13 @@ function movementHandler (e) {
             break;
 
         case " ":               // should make the claw take away a try drop the claw and drop it to the box
+            claw.y - 10 >= 0 ? (claw.y -= 10) : null;
+            if (claw.y - 10 >= 0 ? (claw.y -= 10) : null) {     // whille its moving 
+                for (let i =0; i < prizes.length; i++){ // make the claw check for colisions
+                    hitDetection(claw, prizes[i]);
+                }
+            }
+
             break;
     }
     
@@ -137,26 +171,23 @@ function prizeMaker() {         // should give me a random number of prizes star
     for(let i = 0; i < randInt; i++){       // adds it tpp the prizes arr
         prizeItem = new Prize;
         prizes.push(prizeItem);
-        console.log(prizes[i]);
+        //console.log(prizes[i]);
     }
 
     for(let i = 0; i < prizes.length; i++){
         // let x = Math.floor(Math.random()*50);  // this was for the diffent sizes of prizes but i no do trhat for now
         // let y = Math.floor(Math.random()*50);
-
-        let pos_x;
-        let pox_y;
+        // let pos_x = 0;
+        // let pox_y = 1000;
+        // prizes[i].x = pos_x;
+        // prizes[i].y = pos_y;
     }
 }
 
 // ==== Hit Detection ====
 
-function hitDetection(claw, prizes) {
-    for(let i=0; i < prizes.length; i++) {
-        if(claw.aveWidth = prizes[i].aveWidth){
+function hitDetection(claw, prize) {
 
-        }
-    }
 }
     // ==== Time Left ====
 
