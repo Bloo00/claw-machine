@@ -24,43 +24,32 @@ let time                = 0;                           // adds on per click of t
 let prizeItem;
 let claw;
 
-let blackCat    = new Image();                          // all my cats
-let greenCat    = new Image(); 
-let tealCat     = new Image();
-let pinkCat     = new Image();
-let purpleCat   = new Image();
-let orangeCat   = new Image();
-
-blackCat.src    = "Black.png";
-greenCat.src    = "Green.png";
-tealCat.src     = "Teal.png";
-pinkCat.src     = "Pink.png";
-purpleCat.src   = "Purple.png";
-orangeCat.src   = "Orange.png";
-
+let colors = [ "Black.png","Green.png","Teal.png","Pink.png","Purple.png", "Orange.png" ];
 
 // ==== Entities ====
-console.log(game.height);
+
 class Prize {
-    constructor(x, y, z, width, height, color, cat) {
+    constructor(x, y, z, width, height, color) {
         this.x          = x;
         this.y          = y;
         this.z          = z;
         this.height     = height;
         this.width      = width;                        // i want the average of this or the base of the claw to
-        this.caught     = false;                        
-        this.color      = color;
+        this.caught     = false;                  
+        let prizeImage  = new Image();
+        prizeImage.src  = color;
 
         function hitbox(x,y) {
             return ;
         }
 
         this.render = function () {
-            ctx.fillStyle = this.color;
-            ctx.fillRect(this.x, this.y, this.width, this.height);
+            //ctx.fillRect(this.x, this.y, this.width, this.height);
+            ctx.drawImage(prizeImage, this.x, this.y, this.width, this.height);
         }
     }
 }
+
 
 class Claw {
     constructor(x, y, z, width, height) {
@@ -112,6 +101,9 @@ window.addEventListener("load", function(e) {       // should check to see if th
 function gameLoop() {
     ctx.clearRect(0,0,game.width,game.height);  // clears canvas
     claw.render();                              // makes a new claw
+    for(let i = 0; i < prizes.length; i++){
+        prizes[i].render();
+    }
 }
 
 // ==== Movement of the Claw ====
@@ -186,16 +178,14 @@ async function clawReset () {
 
 // ==== Prize maker ====
 
-function prizeMaker() {         // should give me a random number of prizes starting from 5 all the way up to ten
-    let randInt = Math.floor(Math.random() * 5);
+function prizeMaker() {
     for(let i = 0; i < 25; i++){       // adds it tpp the prizes arr
-        prizeItem = new Prize;
+        let randInt = Math.floor(Math.random() * 5);
+        prizeItem = new Prize(0 , 0 ,0 ,300, 300, colors[randInt]);
         prizes.push(prizeItem);
+        console.log(prizes[i].prizeImage);
     }
-
-    for(let i = 0; i < prizes.length; i++){
-        prizes[i] 
-    }
+    
 }
 
 // ==== Hit Detection ====
@@ -207,12 +197,12 @@ function hitDetection(claw, prize) {
 }
 // ==== Time Left ====
 
-function timeLeft(coins) {
-    if (false){ // should check for button press of the coin slot
-        time = time + 30;
-        return time;
-    }
-}
+// function timeLeft(coins) {
+//     if (false){ // should check for button press of the coin slot
+//         time = time + 30;
+//         return time;
+//     }
+// }
 // ==== slows down the loops if i need ====
 
 function sleep(ms) {
