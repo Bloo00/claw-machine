@@ -156,46 +156,45 @@ function movementHandler (e) {
             
         case "d":               // wanna mmake it move to the "z" direction get closer
             claw.x + 10 <= game.width ? (claw.x += 10) : null;
-            break;
+            break; 
 
         case " ":               // should make the claw take away a try drop the claw and drop it to the box
-        console.log("something");
-        console.log(game.height);
-        console.log(claw.y);
-        
-            claw.y + 10 >= game.height ? (claw.y += 10) : null;
-            if (claw.y - 10 >= 0 ? (claw.y -= 10) : null) {     // whille its moving 
-                for (let i =0; i < prizes.length; i++){         // make the claw check for colisions
-                    hitDetection(claw, prizes[i]);
-                }
-                if (claw.y === game.height || claw.y < game.height) {
-                    claw.y === game.height;
-                }                               // returneto moansodfabyuand;basdfgoinoin';pasfdg
-            }
+            hitDetection(claw, prizes);
+            claw.y+700 <= game.height ? (claw.y += 10) : clawReset();
             break;
     }
 }
 
-
+async function clawReset () {
+    while(claw.z > 0){
+        console.log(claw.z,"z")
+        claw.z          -= 1;
+        claw.height     += 30;
+        claw.width      += 30;
+        claw.x          -= 15;
+        await sleep(50);
+    }
+    while(claw.y != -300){
+        claw.y-=10;
+        await sleep(50);
+    }
+    while(claw.x != 0){
+        claw.x-=10;
+        await sleep(50);
+    }
+}
 
 // ==== Prize maker ====
 
 function prizeMaker() {         // should give me a random number of prizes starting from 5 all the way up to ten
-    // let randInt = Math.floor(Math.random() * 5);
-    //randInt = randInt + 5;
-    let randInt = 25;
-    for(let i = 0; i < randInt; i++){       // adds it tpp the prizes arr
+    let randInt = Math.floor(Math.random() * 5);
+    for(let i = 0; i < 25; i++){       // adds it tpp the prizes arr
         prizeItem = new Prize;
         prizes.push(prizeItem);
     }
 
     for(let i = 0; i < prizes.length; i++){
-        // let x = Math.floor(Math.random()*50);  // this was for the diffent sizes of prizes but i no do trhat for now
-        // let y = Math.floor(Math.random()*50);
-        // let pos_x = 0;
-        // let pox_y = 1000;
-        // prizes[i].x = pos_x;
-        // prizes[i].y = pos_y;
+        prizes[i] 
     }
 }
 
@@ -206,11 +205,16 @@ function hitDetection(claw, prize) {
     sweet_l = (claw.x + claw.aveWidth)/2;
     sweet_r = (claw.x + 450)/2;
 }
-    // ==== Time Left ====
+// ==== Time Left ====
 
-    function timeLeft(coins) {
-        if (false){ // should check for button press of the coin slot
-            time = time + 30;
-            return time;
-        }
+function timeLeft(coins) {
+    if (false){ // should check for button press of the coin slot
+        time = time + 30;
+        return time;
     }
+}
+// ==== slows down the loops if i need ====
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
