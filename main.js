@@ -140,38 +140,45 @@ function movementHandler (e) {
 
         case " ":               // should make the claw take away a try drop the claw and drop it to the box
             let gotCat = false;
-            hitDetection(claw_0, prizes);
+            gotCat = hitDetection(claw_0, prizes);
             if(gotCat != true){
                 claw_0.y+1750 <= prizes[hitPrize].y + prizes[hitPrize].y+prizes[hitPrize].height
                  ? (claw_0.y += 10) : clawReset();
             }
-            if(claw_0.y + 1400 >= game.height){
-                claw_0.y+1450 <= game.height ? (claw_0.y += 10) : clawReset();
+            if(claw_0.y + 1500 >= game.height && claw_0.z === 0){
+                claw_0.y+1500 <= game.height ? (claw_0.y += 10) : clawReset();
+            }
+            if(claw_0.y + 1600 >= game.height && claw_0.z === 1){
+                claw_0.y+1600 <= game.height ? (claw_0.y += 10) : clawReset();
+            }
+            if(claw_0.y + 1700 >= game.height && claw_0.z === 2){
+                claw_0.y+1700 <= game.height ? (claw_0.y += 10) : clawReset();
+            }
+            if(claw_0.y + 1800 >= game.height && claw_0.z === 3){
+                claw_0.y+1800 <= game.height ? (claw_0.y += 10) : clawReset();
             }
             break;
     }
 }
 // ==== claw reseter ====
 async function clawReset () {
-    if (true) {
-        while (claw_0.y > -1000){
-        claw_0.y -= 10;
+
+    while (claw_0.y > -1000){
+    claw_0.y -= 10;
+    await sleep(50);
+    }
+    while (claw_0.x > 0 ){
+        claw_0.x -= 10; 
         await sleep(50);
-        }
-        while (claw_0.x > 0){
-            claw_0.x -= 10;
-            await sleep(50);
-        }
-        while (claw_0.z > 0){
-            claw_0.z          -= 1;
-            claw_0.height     += 30;
-            claw_0.width      += 30;
-            claw_0.x          -= 15;
-            claw_0.y          += 50;
-        }
-    console.log(hitPrize, "wonk");
-    console.log(claw_0.y+1400) //// work on this
-    console.log(prizes[hitPrize].y);
+    }
+    while (claw_0.z > 0) {
+        claw_0.z          -= 1;
+        claw_0.height     += 30;
+        claw_0.width      += 30;
+        claw_0.x          -= 15;
+        claw_0.y          += 50;
+
+
     if (claw_0.caught) {
         console.log("yes");
         while (claw_0.y > -1000){
@@ -247,27 +254,18 @@ function prizeMaker() {
 
 // ==== Hit Detection ====
 
-function hitDetection(claw_0, prizes) {
-    for(let i = 0; i < prizes.length; i++){
-        // console.log(claw_0.aveWidth() > prizes[i].x + 20);
-        // console.log(claw_0.aveWidth() < (prizes[i].x + prizes[i].width-20));
-        // console.log(claw_0.z == prizes[i].z);
-        // console.log(claw_0.y - claw_0.height - 200 < prizes[i].height+100, "4");
-        // console.log();
-        
+function hitDetection(claw, prizes) {
+    console.log('im runnig');
 
-        if( claw_0.aveWidth() > prizes[i].x + 20 && 
-            claw_0.aveWidth() < (prizes[i].x + prizes[i].width-20) && 
-            claw_0.z == prizes[i].z &&
-            claw_0.y - claw_0.height-400 < prizes[i].height){
-
-                claw_0.caught = true;
-                gotCat = true;
-                hitPrize = i;
-                //clawAnimatoin(claw_0);
+    for(let i = 0; i <prizes.length; i++){
+        if(claw_0.aveWidth() > prizes[i].x && 
+                claw_0.aveWidth() < prizes[i].x + prizes[i].width && 
+                claw_0.z === prizes[i].z &&
+                claw_0.y - claw_0.height < prizes[i].height){
+                    claw_0.caught = true;
+                    return i;
         }
     }
-    return 0;
 }
 
 async function clawAnimatoin (claw_0){
