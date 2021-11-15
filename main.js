@@ -1,4 +1,3 @@
-
 // ==== GLOBAL DOM / VARIABLES ====
 let game                = document.querySelector("#game");         // <canvas>
 let movementDisplay     = document.querySelector("#movement");
@@ -38,10 +37,6 @@ class Prize {
         let prizeImage  = new Image();
         prizeImage.src  = color;
 
-        function hitbox(x,y) {
-            return ;
-        }
-
         this.render = function () {
             //ctx.fillRect(this.x, this.y, this.width, this.height);
             ctx.drawImage(prizeImage, this.x, this.y, this.width, this.height);
@@ -64,9 +59,9 @@ class Claw {
         this.render     = function () {
             ctx.drawImage(clawImg, this.x, this.y, this.width, this.height);
         }
-        function aveWidth() {
-            return (this.x+450)/2;
-        }
+    }
+    aveWidth() {
+        return (this.x +this.width)/2;
     }
 }
 
@@ -87,11 +82,6 @@ class Machine {
 
 window.addEventListener("load", function(e) {       // should check to see if the dom loaded
     claw_0 = new Claw(20, -300, 0, 450, 700);         // makes a new claw with the size of that
-    claw_1 = new Claw(20, -300, 1, 450, 700);
-    claw_2 = new Claw(20, -300, 2, 450, 700);
-    claw_3 = new Claw(20, -300, 3, 450, 700);
-    claw_4 = new Claw(20, -300, 4, 450, 700);
-    claw_5 = new Claw(20, -300, 5, 450, 700);
                                                     // the 0 is the z axis and should go to 5
     prizeMaker();
     const runGame = setInterval(gameLoop, 1);       // game loop set at 1 ms
@@ -101,26 +91,7 @@ window.addEventListener("load", function(e) {       // should check to see if th
 // ==== Game Processes ====
 
 function gameLoop() {
-    ctx.clearRect(0,0,game.width,game.height);  // clears canvas
-    for(let i = 5; i >= 0; i--){        // back
-        prizes[i].render();
-        claw_4.render();
-    }    
-    for(let i = 12; i > 5; i--){        // 3
-        prizes[i].render();
-        claw_3.render();
-    }
-    for(let i = 19; i > 12; i--){        // 2
-        prizes[i].render();
-        claw_2.render();
-    }
-    for(let i = 24; i > 19; i--){        // front
-        prizes[i].render();
-        claw_1.render();
-    }
-    
-
-    claw_0.render();                              // makes a new claw
+    renderScene(claw_0.z);                             // makes a new claw
 }
 
 // ==== Movement of the Claw ====
@@ -165,26 +136,34 @@ function movementHandler (e) {
             break; 
 
         case " ":               // should make the claw take away a try drop the claw and drop it to the box
-            hitDetection(claw_0, prizes);
             claw_0.y+700 <= game.height ? (claw_0.y += 10) : clawReset();
             break;
     }
 }
 // ==== Makes it go slower
 async function clawReset () {
+    // get the hit detection functoin
+    let hitPrize = hitDetection(claw_0, prizes);
     while(claw_0.z > 0){
         claw_0.z          -= 1;
         claw_0.height     += 30;
         claw_0.width      += 30;
         claw_0.x          -= 15;
+        prizes[hitPrize].z          -= 1;
+        prizes[hitPrize].height     += 30;
+        prizes[hitPrize].width      += 30;
+        prizes[hitPrize].x          -= 15;
         await sleep(50);
     }
+    prizes[hitPrize].y +=40;
     while(claw_0.y != -300){
         claw_0.y-=10;
+        prizes[hitPrize].y -=10;
         await sleep(50);
     }
     while(claw_0.x != 0){
         claw_0.x-=10;
+        prizes[hitPrize].x -=10;
         await sleep(150);
     }
 }
@@ -236,17 +215,18 @@ function prizeMaker() {
 }
 
 // ==== Hit Detection ====
-let sweet_l = 0;           //  this make it global but didnt wanna put it up there 
-let sweet_r = 0;
+
 function hitDetection(claw, prizes) {
-    sweet_l = (claw.x + claw.aveWidth)/2;
-    sweet_r = (claw.aveWidth + 450)/2;
-    console.log(claw.x, sweet_l,sweet_r,claw.width+claw.x);
-    for(let i =0; i < prizes.length; i++){
-       if (sweet_r < prizes.width && sweet_l < prizes.width + 450 && claw.z === prizes[i].z
-        && claw.y + 700){
-        console.log("hi braylin");
-        } 
+    console.log('im runnig');
+
+    for(let i = 0; i <prizes.length; i++){
+        if(claw_0.aveWidth() > prizes[i].x && 
+                claw_0.aveWidth() < prizes[i].x + prizes[i].width && 
+                claw_0.z === prizes[i].z &&
+                claw_0.y - claw_0.height < prizes[i].height){
+                    claw_0.caught = true;
+                    return i;
+        }
     }
 }
 // ==== Time Left ====
@@ -263,3 +243,15 @@ function hitDetection(claw, prizes) {
 function sleep(ms) {                                            // gets a number val and uses that to make the the code wait the amount of time before going again
     return new Promise(resolve => setTimeout(resolve, ms));
   }
+// ==== renders the whole thing a gain to get the layer right ====
+function renderScene(z) {
+	let renderedClaw = false;
+	ctx.clearRect(0,0,game.width,game.height);  // clears canvas
+	for(let i = 0; i < prizes.length; i++) {
+		if(z === prizes[i].z && !renderedClaw) {
+			claw_0.render(); 
+			renderedClaw = true;
+		}
+		prizes[i].render();
+	}
+}
