@@ -6,7 +6,7 @@ html,body {
   body {
     padding-top: 1em;
     text-align: center;
-    background-color: black;
+    background-color: lightblue;
     /* background-image: url('../img/dungeonhell.png'); */
     background-size: cover;
     background-repeat: space;
@@ -15,13 +15,14 @@ html,body {
   h1, h2 {
     font-family: 'Press Start 2P', monospace;
     /* font-family: monospace; */
-    color: goldenrod;
+    color: black;
   }
   
   canvas {
     /* background-image: url('../img/stone.png'); */
     /* background-repeat: repeat; */
     background-color: #222;
+    border: 20px solid pink;
     width: 90em;
     height: 60em;
   }
@@ -65,10 +66,10 @@ html,body {
   
   #btm-left {
     grid-area: btm-left;
-    background-color: #222;
+    background-color: pink;
   }
   
   #btm-right {
     grid-area: btm-right;
-    background-color: #222;
+    background-color: pink;
   }

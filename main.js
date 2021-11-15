@@ -21,8 +21,9 @@ let prizesGot           = [];
 let time                = 0;                           // adds on per click of the coin slot
 let prizeItem;
 let claws               =[];
+let hitPrize = 0;
 
-let colors = [ "Black.png","Green.png","Teal.png","Pink.png","Purple.png", "Orange.png" ];
+let colors = [ "images/Black.png","images/Green.png","images/Teal.png","images/Pink.png","images/Purple.png", "images/Orange.png" ];
 
 // ==== Entities ====
 
@@ -54,14 +55,14 @@ class Claw {
         this.width      = width;                        // i want the average of this or the base of the claw to
         this.caught     = false;
         let clawImg     = new Image();
-        clawImg.src     = 'Crane_4.png';
+        clawImg.src     = 'images/Crane_4.png';
 
         this.render     = function () {
             ctx.drawImage(clawImg, this.x, this.y, this.width, this.height);
         }
     }
     aveWidth() {
-        return (this.x +this.width)/2;
+        return (this.x + this.x + this.width)/2;
     }
 }
 
@@ -81,7 +82,7 @@ class Machine {
 // ==== Event listener ====
 
 window.addEventListener("load", function(e) {       // should check to see if the dom loaded
-    claw_0 = new Claw(20, -300, 0, 450, 700);         // makes a new claw with the size of that
+    claw_0 = new Claw(20, -1000, 0, 300, 1400);         // makes a new claw with the size of that
                                                     // the 0 is the z axis and should go to 5
     prizeMaker();
     const runGame = setInterval(gameLoop, 1);       // game loop set at 1 ms
@@ -102,14 +103,15 @@ function movementHandler (e) {
 
     switch(e.key){            
         case "w":              // wanna mmake it move to the "z" direction  get further 
-            if (claw_0.z === 5){  
-                claw_0.z              = 5;
+            if (claw_0.z === 3){  
+                claw_0.z              = 3;
             }else{
-                if (claw_0.z < 5){
+                if (claw_0.z < 3){
                     claw_0.z          += 1;
-                    claw_0.height     -= 30;
-                    claw_0.width      -= 30;
+                    claw_0.height     -= 25;
+                    claw_0.width      -= 25;
                     claw_0.x          += 15;
+                    claw_0.y          -= 50;
                 }
             }
             break;
@@ -120,13 +122,14 @@ function movementHandler (e) {
 
         case "s":               
         if (claw_0.z === 0){  
-            claw_0.z          = 0;
+            claw_0.z   = 0;
         }else{
             if (claw_0.z > 0){
                 claw_0.z          -= 1;
-                claw_0.height     += 30;
-                claw_0.width      += 30;
+                claw_0.height     += 25;
+                claw_0.width      += 25;
                 claw_0.x          -= 15;
+                claw_0.y          += 50;
             }
         }
             break;
@@ -136,52 +139,79 @@ function movementHandler (e) {
             break; 
 
         case " ":               // should make the claw take away a try drop the claw and drop it to the box
-            claw_0.y+700 <= game.height ? (claw_0.y += 10) : clawReset();
+            let gotCat = false;
+            hitDetection(claw_0, prizes);
+            if(gotCat != true){
+                claw_0.y+1750 <= prizes[hitPrize].y + prizes[hitPrize].y+prizes[hitPrize].height
+                 ? (claw_0.y += 10) : clawReset();
+            }
+            if(claw_0.y + 1400 >= game.height){
+                claw_0.y+1450 <= game.height ? (claw_0.y += 10) : clawReset();
+            }
             break;
     }
 }
-// ==== Makes it go slower
+// ==== claw reseter ====
 async function clawReset () {
-    // get the hit detection functoin
-    let hitPrize = hitDetection(claw_0, prizes);
-    while(claw_0.z > 0){
-        claw_0.z          -= 1;
-        claw_0.height     += 30;
-        claw_0.width      += 30;
-        claw_0.x          -= 15;
-        prizes[hitPrize].z          -= 1;
-        prizes[hitPrize].height     += 30;
-        prizes[hitPrize].width      += 30;
-        prizes[hitPrize].x          -= 15;
+    if (true) {
+        while (claw_0.y > -1000){
+        claw_0.y -= 10;
         await sleep(50);
+        }
+        while (claw_0.x > 0){
+            claw_0.x -= 10;
+            await sleep(50);
+        }
+        while (claw_0.z > 0){
+            claw_0.z          -= 1;
+            claw_0.height     += 30;
+            claw_0.width      += 30;
+            claw_0.x          -= 15;
+            claw_0.y          += 50;
+        }
+    console.log(hitPrize, "wonk");
+    console.log(claw_0.y+1400) //// work on this
+    console.log(prizes[hitPrize].y);
+    if (claw_0.caught) {
+        console.log("yes");
+        while (claw_0.y > -1000){
+            prizes[hitPrize].y -= 10;
+            await sleep(50);
+            }
+            while (claw_0.x > 0){
+                prizes[hitPrize].x -= 10;
+                await sleep(50);
+            }
+            while (claw_0.z > 0){
+                prizes[hitPrize]          -= 1;
+                claw_0.height     += 30;
+                claw_0.width      += 30;
+                prizes[hitPrize].x          -= 50;
+                prizes[hitPrize].y          += 50;
+            }
+            gotCat = false;
     }
-    prizes[hitPrize].y +=40;
-    while(claw_0.y != -300){
-        claw_0.y-=10;
-        prizes[hitPrize].y -=10;
-        await sleep(50);
+    
+    //await sleep(50);
+    //console.log(prizes[hitPrize].x,prizes[hitPrize].y)
     }
-    while(claw_0.x != 0){
-        claw_0.x-=10;
-        prizes[hitPrize].x -=10;
-        await sleep(150);
-    }
-}
+}       
+    
 
 // ==== Prize maker ====
 
 function prizeMaker() {
     for(let i = 0; i < 25; i++){       // adds it tpp the prizes arr
         let randInt = Math.floor(Math.random() * 5);
-        prizeItem = new Prize(0 , 0 ,0 ,300, 300, colors[randInt]);
+        prizeItem = new Prize(0, 0, 0, 210, 210, colors[randInt]);
         prizes.push(prizeItem);
     }
     // make the cats apear
     let j = 0;
     for(let i = 24; i > 19; i--){        // makes the posioitioning
-        prizes[i].x = (game.width/5)+j*200; // very front
+        prizes[i].x = (game.width/6)+j*250; // very front
         j+=1;
-        prizes[i].y = 650;
+        prizes[i].y = 700;
     }
         j = 0;
     for(let i = 19; i > 12; i--){        // makes the posioitioning
@@ -200,8 +230,8 @@ function prizeMaker() {
         prizes[i].height -= 60;
         prizes[i].x = ( j*180);
         j+=1;
-        console.log(prizes[i].x);
-        prizes[i].y = 550;
+        //console.log(prizes[i].x);
+        prizes[i].y = 500;
     }
         j = 0;
     for(let i = 5; i >= 0; i--){        // makes the posioitioning
@@ -210,33 +240,49 @@ function prizeMaker() {
         prizes[i].height -= 90;
         prizes[i].x = ( game.width/5 + j*180);
         j+=1;
-        prizes[i].y = 500;
+        prizes[i].y = 450;
     }
+    console.log(prizes);
 }
 
 // ==== Hit Detection ====
 
-function hitDetection(claw, prizes) {
-    console.log('im runnig');
+function hitDetection(claw_0, prizes) {
+    for(let i = 0; i < prizes.length; i++){
+        // console.log(claw_0.aveWidth() > prizes[i].x + 20);
+        // console.log(claw_0.aveWidth() < (prizes[i].x + prizes[i].width-20));
+        // console.log(claw_0.z == prizes[i].z);
+        // console.log(claw_0.y - claw_0.height - 200 < prizes[i].height+100, "4");
+        // console.log();
+        
 
-    for(let i = 0; i <prizes.length; i++){
-        if(claw_0.aveWidth() > prizes[i].x && 
-                claw_0.aveWidth() < prizes[i].x + prizes[i].width && 
-                claw_0.z === prizes[i].z &&
-                claw_0.y - claw_0.height < prizes[i].height){
-                    claw_0.caught = true;
-                    return i;
+        if( claw_0.aveWidth() > prizes[i].x + 20 && 
+            claw_0.aveWidth() < (prizes[i].x + prizes[i].width-20) && 
+            claw_0.z == prizes[i].z &&
+            claw_0.y - claw_0.height-400 < prizes[i].height){
+
+                claw_0.caught = true;
+                gotCat = true;
+                hitPrize = i;
+                //clawAnimatoin(claw_0);
         }
     }
+    return 0;
 }
-// ==== Time Left ====
 
-// function timeLeft(coins) {
-//     if (false){ // should check for button press of the coin slot
-//         time = time + 30;
-//         return time;
-//     }
-// }
+async function clawAnimatoin (claw_0){
+    if(clawReset.caught){
+        claw_0.clawImg.src     = 'images/Crane_4.png';
+        await sleep(100);
+        claw_0.clawImg.src     = 'images/Crane_3.png';
+        await sleep(100);
+        claw_0.clawImg.src     = 'images/Crane_2.png';
+        await sleep(100);
+        claw_0.clawImg.src     = 'images/Crane_1.png';
+        await sleep(100);
+    }
+}
+
 
 // ==== slows down the loops if i need ====
 
@@ -248,10 +294,18 @@ function renderScene(z) {
 	let renderedClaw = false;
 	ctx.clearRect(0,0,game.width,game.height);  // clears canvas
 	for(let i = 0; i < prizes.length; i++) {
+        prizes[i].render();
 		if(z === prizes[i].z && !renderedClaw) {
 			claw_0.render(); 
 			renderedClaw = true;
 		}
-		prizes[i].render();
 	}
 }
+// ==== Time Left ====
+
+// function timeLeft(coins) {
+//     if (false){ // should check for button press of the coin slot
+//         time = time + 30;
+//         return time;
+//     }
+// }
